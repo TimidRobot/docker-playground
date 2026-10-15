@@ -18,8 +18,8 @@ jobs:
       # https://github.com/hadolint/hadolint
       - name: Download hadolint v2.15.1
         run: |
-          wget --tries=3 --output-document=/usr/local/bin/hadolint \
-            $HADOLINT_DOWNLOAD$HADOLINT_VERSION
+          wget --tries=3 --output-document=/usr/local/bin/hadolint --continue \
+            --progress=dot:mega $HADOLINT_DOWNLOAD$HADOLINT_VERSION
           echo "$HADOLINT_SHA256 /usr/local/bin/hadolint" \
              > hadolint-linux-x86_64_sha256checksum
           sha256sum --check hadolint-linux-x86_64_sha256checksum
