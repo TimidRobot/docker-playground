@@ -1,0 +1,16 @@
+# https://docs.docker.com/compose/compose-file/
+name: docker-playground
+
+services:
+
+  trixie:
+    container_name: trixie
+    build:
+      context: .
+      dockerfile: Dockerfile.trixie
+    init: true
+    restart: on-failure
+    security_opt:
+      # Disable container processes from gaining new privileges
+      # (breaks su and sudo)
+      - no-new-privileges:true

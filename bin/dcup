@@ -1,0 +1,130 @@
+#!/bin/bash
+#
+# dcup (Docker Compose UP)
+#
+# Helper script to start services defined by docker compose and clean them up
+# after they are stopped
+# - requires macOS and Docker Desktop
+# - launches Docker if it is not currently running
+#
+set -o errexit
+set -o errtrace
+set -o nounset
+
+# shellcheck disable=SC2154
+trap '_es=${?};
+    printf "${0}: line ${LINENO}: \"${BASH_COMMAND}\"";
+    printf " exited with a status of ${_es}\n";
+    exit ${_es}' ERR
+
+declare -i BUILD=0
+# https://en.wikipedia.org/wiki/ANSI_escape_code
+E0="$(printf "\e[0m")"        # reset
+E30="$(printf "\e[30m")"      # foreground: black
+E90="$(printf "\e[90m")"      # foreground: bright black (gray)
+E95="$(printf "\e[95m")"      # foreground: bright magenta
+E97="$(printf "\e[97m")"      # foreground: bright white
+E107="$(printf "\e[107m")"    # background: bright white
+USAGE="${E95}dcup${E0} (Docker Compose UP)
+Helper script to start services defined by docker compose and clean them up
+after they are stopped. Optionally builds services first.
+
+${E97}Usage:${E0} dup [-h] [-b]
+
+${E97}Options:${E0}
+    -h  show this help message and exit
+    -b  build images before starting services
+"
+
+#### FUNCTIONS ################################################################
+
+check_docker() {
+    print_header 'Ensure docker is running and display information'
+    if ! docker info &>/dev/null
+    then
+        echo -n "${E90}Waiting"
+        open -a Docker --fresh &
+        until docker info &>/dev/null
+        do
+            echo -n .
+            sleep 0.1
+        done
+        echo "${E0}"
+    fi
+    {
+        docker version \
+            | gsed \
+                -e'/API\|Go\|Git\|Built\|Arch\|Context\|Experimental\|^$/d' \
+            | gsed --null-data \
+                -e's/Server: /Server:\n /' \
+                -e's/Desktop /Desktop Version:/' \
+                -e's/:\n *Version/ Version/g'
+        docker compose version \
+            | gsed \
+                -e's/Docker //' \
+                -e's/version/Version:/'
+    } \
+        | gsed \
+            -e's/Version: */Version:|/' \
+        | column -s'|' -t
+    echo
+}
+
+docker_compose_build() {
+    (( BUILD == 0 )) && return 0
+    print_header '(Re)Build services'
+    docker compose build
+    echo
+}
+
+parse_args() {
+    # Print Help/Usage if requested
+    local _arg
+    shopt -s nocasematch
+    # only accept help "action" in 1st position
+    [[ "${1:-}" == 'help' ]] && help_print
+    # evaulate all positional parameters for help options
+    for _arg in "${@}"
+    do
+        case "${_arg}" in
+            -h | -help | --help | help ) print_help_and_exit;;
+            -b ) BUILD=1;;
+        esac
+    done
+    shopt -u nocasematch
+    return 0
+}
+
+print_header() {
+    # Print 80 character wide black on white heading
+    printf "${E30}${E107}# %-69s$(date '+%T') ${E0}\n" "${@}"
+}
+
+print_help_and_exit() {
+    echo "${USAGE}"
+    exit
+}
+
+#### MAIN #####################################################################
+
+parse_args "${@:-}"
+
+check_docker
+
+docker_compose_build
+
+# In some situations (ex. Docker restarted), the network may not be cleaned-up
+# yet. Starting with `docker compose down` prevents `docker compose up` from
+# failing with errors like:
+#   Error response from daemon: network [...] not found
+print_header 'Stop and remove containers, networks'
+docker compose down
+echo
+
+print_header 'Create and start containers'
+docker compose up || true
+echo
+
+print_header 'Stop and remove containers, networks'
+docker compose down
+echo
