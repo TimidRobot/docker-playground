@@ -15,6 +15,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         curl \
         httpie \
         less \
+        man-db \
+        manpages \
         ripgrep \
         rsync \
         tree \
