@@ -31,6 +31,9 @@ Docker services & utilities for ease, experimentation, and reference.
     4. Clean-up after the services exit
   - I find this script to be generally useful and have symlinked it into my
     home directory's `bin/` directory.
+  - <details><summary>Example <code>dcup</code> output (click to expand)</summary>
+    <img width="486" height="683" alt="Screenshot 2026-10-15 at 13 48 40" src="https://github.com/user-attachments/assets/ffb869a8-ffe7-439f-808c-64049af077b6" />
+    </details>
 
 
 ## Development
