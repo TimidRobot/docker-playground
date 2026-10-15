@@ -43,6 +43,7 @@ hooks = [
 ]
 
 # hadolint (Dockerfiles)
+# https://github.com/hadolint/hadolint
 [[repos]]
 repo = "local"
 hooks = [
@@ -65,6 +66,7 @@ hooks = [
 ]
 
 # shellcheck
+# https://github.com/koalaman/shellcheck
 [[repos]]
 repo = "local"
 hooks = [
