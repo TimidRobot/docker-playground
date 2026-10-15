@@ -1,31 +1,36 @@
 # docker-playground
 
-Docker services & utilities for fun & reference.
+Docker services & utilities for ease, experimentation, and reference.
 
 
 ## Services
 
-- `trixie`: Debian 13 (trixie) service for reference
-  - Uses the `debian:trixie` image from [debian - Official Image | Docker
-    Hub](https://hub.docker.com/_/debian)
+- **`trixie`**: Debian 13 (trixie) with a few utilities I find helpful
+  ([HTTPie][httpie], [ripgrep][ripgrep], etc.)
+  - [`dockerfiles/trixie.Dockerfile`](dockerfiles/trixie.Dockerfile)
   - I use the `debian:trixie-slim` image in production and it is too lean to be
     a helpful reference.
+
+[httpie]: https://httpie.io/
+[ripgrep]: https://ripgrep.dev/
 
 
 ## Utilities
 
-- `bin/dcup`: _Helper script to start services defined by docker compose and
-  clean them up after they are stopped. Optionally builds services first._
-  - I find this script to be generally useful and have symlinked it into my
-    home directory's `bin/` directory.
+- **`dcup`**: _Helper script to start services defined by docker
+  compose and clean them up after they are stopped. Optionally builds services
+  first._
+  - [`bin/dcup`](bin/dcup)
   - For examples, the following command will:
+    ```shell
+    ./bin/dcup -b
+    ```
     1. Launch Docker if it is not already running
     2. Build all the services defined in `docker-compose.yml`
     3. Start the services
     4. Clean-up after the services exit
-    ```shell
-    ./bin/dcup -b
-    ```
+  - I find this script to be generally useful and have symlinked it into my
+    home directory's `bin/` directory.
 
 
 ## Development
@@ -37,14 +42,14 @@ Docker services & utilities for fun & reference.
 2. Install hadolint ([Install - hadolint/hadolint][hadolint-install])
 3. Install shellcheck ([Installing - koalaman/shellcheck][shellcheck-install])
 4. Install prek ([Installation - j178/prek][prek-install])
-5. Prepare prek hooks:
+5. Prepare and install prek Git hooks:
    ```shell
    prek install --prepare-hooks
    ```
 
 [get-docker]: https://docs.docker.com/get-started/get-docker/
 [hadolint-install]: https://github.com/hadolint/hadolint#install
-[shellcheck-insetall]: https://github.com/koalaman/shellcheck#installing
+[shellcheck-install]: https://github.com/koalaman/shellcheck#installing
 [prek-install]: https://github.com/j178/prek#installation
 
 

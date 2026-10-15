@@ -6,8 +6,8 @@ services:
   trixie:
     container_name: trixie
     build:
-      context: .
-      dockerfile: Dockerfile.trixie
+      context: Dockerfiles/
+      dockerfile: Dockerfiles/trixie.Dockerfile
     init: true
     restart: on-failure
     security_opt:
