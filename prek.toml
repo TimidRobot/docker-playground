@@ -4,8 +4,9 @@
 # https://pre-commit.com/#meta-hooks
 repo = "meta"
 hooks = [
-  { id = "check-useless-excludes" },
+  { id = "check-useless-excludes", name = "meta: check-useless-excludes" },
 ]
+
 
 # builtin
 [[repos]]
@@ -42,6 +43,7 @@ hooks = [
   },
 ]
 
+
 # hadolint (Dockerfiles)
 # https://github.com/hadolint/hadolint
 [[repos]]
@@ -65,6 +67,7 @@ hooks = [
   },
 ]
 
+
 # shellcheck
 # https://github.com/koalaman/shellcheck
 [[repos]]
@@ -81,5 +84,6 @@ hooks = [
     description = "Runs shellcheck to lint shell files",
   },
 ]
+
 
 # vim: tabstop=2 shiftwidth=2
