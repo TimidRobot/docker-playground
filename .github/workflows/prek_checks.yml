@@ -11,7 +11,7 @@ jobs:
         - name: Install hadolint
           run: |
             wget --tries=3 --output-document=/usr/local/bin/hadolint \
-              --continue --progress=dot:mega \
+              --continue --no-verbose \
               $HADOLINT_DOWNLOAD/$HADOLINT_VERSION/$HADOLINT_BINARY
             echo "$HADOLINT_SHA256 /usr/local/bin/hadolint" \
                > hadolint-linux-x86_64_sha256checksum
@@ -43,12 +43,16 @@ jobs:
           with:
             install-only: true
 
-      # https://stackoverflow.com/a/75237344
+      # https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#setting-an-environment-variable
       - name: On merge, set env variable to skip no-commit-to-branch
         if: ${{ github.event.pull_request.merged }}
         run: echo 'PREK_SKIP=no-commit-to-branch' >> $GITHUB_ENV
 
       - name: 'Run prek'
         run: |
+          echo
+          env
+          echo
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
           [[ -z "$PREK_SKIPO" ]] || echo "PREK_SKIP: $PREK_SKIP"
           prek run --show-diff-on-failure --color=always --all-files
