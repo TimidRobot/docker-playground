@@ -35,10 +35,10 @@ jobs:
       # path 1
       - name: 'On merge: run prek without no-commit-to-branch'
         if: ${{ github.event.pull_request.merged }}
-        uses: ${{ env.PREK_VERSION }}
+        uses: $PREK_VERSION
         with:
           extra-args: --skip no-commit-to-branch
       # path 2
       - name: 'Not on merge: run prek with no-commit-to-branch'
         if: ${{ ! github.event.pull_request.merged }}
-        uses: ${{ env.PREK_VERSION }}
+        uses: $PREK_VERSION
