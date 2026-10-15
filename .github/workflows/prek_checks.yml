@@ -2,10 +2,14 @@ name: prek checks
 on: [push, pull_request]
 
 env:
-  # hadolint v2.15.1
-  HADOLINT_URL: https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-x86_64
-  HADOLINT_SHA: c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
-  MERGED: ${{ github.event.pull_request.merged }}
+  # hadolint
+  HADOLINT_DOWNLOAD: https://github.com/hadolint/hadolint/releases/download/
+  # v2.15.1
+  HADOLINT_VERSION: v2.15.1/hadolint-linux-x86_64
+  HADOLINT_SHA256: >
+    c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
+  PREK_EXTRA_ARGS: >
+    ${{ github.event.pull_request.merged }} ? "--skip no-commit-to-branch" : ""
 
 jobs:
   prek:
@@ -15,8 +19,8 @@ jobs:
       - name: Download hadolint v2.15.1
         run: |
           wget --tries=3 --output-document=/usr/local/bin/hadolint \
-            $HADOLINT_URL
-          echo "$HADOLINT_SHA /usr/local/bin/hadolint" \
+            $HADOLINT_DOWNLOAD$HADOLINT_VERSION
+          echo "$HADOLINT_SHA256 /usr/local/bin/hadolint" \
              > hadolint-linux-x86_64_sha256checksum
           sha256sum --check hadolint-linux-x86_64_sha256checksum
           chmod 0755 /usr/local/bin/hadolint
@@ -32,5 +36,4 @@ jobs:
       - name: Run prek
         uses: j178/prek-action@1382ad72dea72f9d53832f2bcb65b3e87a947204 # v3.0.1
         with:
-          variables: |
-            PREK_SKIP: "$MERGED" ? "no-commit-to-branch" : ""
+          extra-args: $PREK_EXTRA_ARGS
