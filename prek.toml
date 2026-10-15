@@ -35,11 +35,7 @@ hooks = [
   },
   { id = "check-symlinks", name = "builtin: check-symlinks" },
   { id = "check-merge-conflict", name = "builtin: check-merge-conflict" },
-  {
-    id = "no-commit-to-branch",
-    name = "builtin: no-commit-to-branch",
-    stages = [ "manual", "commit-msg", "pre-commit", "pre-push" ],
-  },
+  { id = "no-commit-to-branch", name = "builtin: no-commit-to-branch" },
   {
     id = "check-executables-have-shebangs",
     name = "builtin: check-executables-have-shebangs"
