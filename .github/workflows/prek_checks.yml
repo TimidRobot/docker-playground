@@ -1,11 +1,32 @@
 name: prek checks
 on: [push, pull_request]
 
+env:
+  # hadolint v2.15.1
+  HADOLINT_BINARY: https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-x86_64
+  HADOLINT_SHA256: c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
+
 jobs:
   prek:
     runs-on: ubuntu-latest
     steps:
+      # https://github.com/hadolint/hadolint
+      - name: Download hadolint v2.15.1
+        run: |
+          wget --tries=3 --output-document=/usr/local/bin/hadolint \
+            $HADOLINT_BINARY
+          echo "$HADOLINT_SHA256 /usr/local/bin/hadolint" \
+             > hadolint-linux-x86_64_sha256checksum
+          sha256sum --check hadolint-linux-x86_64_sha256checksum
+          chmod 0755 /usr/local/bin/hadolint
+      # https://github.com/koalaman/shellcheck
+      - name: Install shellcheck
+        run: |
+          apt-get update
+          apt-get install shellcheck
       # https://github.com/actions/checkout
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # https://github.com/j178/prek-action
-      - uses: j178/prek-action@1382ad72dea72f9d53832f2bcb65b3e87a947204 # v3.0.1
+      - name: Run prek
+        uses: j178/prek-action@1382ad72dea72f9d53832f2bcb65b3e87a947204 # v3.0.1
