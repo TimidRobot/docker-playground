@@ -2,14 +2,13 @@ name: prek checks
 on: [push, pull_request]
 
 env:
-  # hadolint
+  # hadolint v2.15.1
   HADOLINT_DOWNLOAD: https://github.com/hadolint/hadolint/releases/download/
-  # v2.15.1
   HADOLINT_VERSION: v2.15.1/hadolint-linux-x86_64
   HADOLINT_SHA256: >-
     c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
-  PREK_EXTRA_ARGS: >-
-    ${{ github.event.pull_request.merged }} ? "--skip no-commit-to-branch" : ""
+  # prek v3.0.1
+  PREK_VERSION: j178/prek-action@1382ad72dea72f9d53832f2bcb65b3e87a947204
 
 jobs:
   prek:
@@ -33,7 +32,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # https://github.com/j178/prek-action
-      - name: Run prek
-        uses: j178/prek-action@1382ad72dea72f9d53832f2bcb65b3e87a947204 # v3.0.1
+      # path 1
+      - name: 'On merge: run prek without no-commit-to-branch'
+        if: ${{ github.event.pull_request.merged }}
+        uses: ${{ env.PREK_VERSION }}
         with:
-          extra-args: ${{ env.PREK_EXTRA_ARGS }}
+          extra-args: --skip no-commit-to-branch
+      # path 2
+      - name: 'Not on merge: run prek with no-commit-to-branch'
+        if: ${{ ! github.event.pull_request.merged }}
+        uses: ${{ env.PREK_VERSION }}
