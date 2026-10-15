@@ -8,7 +8,7 @@ jobs:
       - parallel:
 
         # https://github.com/hadolint/hadolint
-        - name: Install hadolint v2.15.1
+        - name: Install hadolint
           run: |
             wget --tries=3 --output-document=/usr/local/bin/hadolint \
               --continue --progress=dot:mega \
