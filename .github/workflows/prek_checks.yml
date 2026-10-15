@@ -1,13 +1,6 @@
 name: prek checks
 on: [push, pull_request]
 
-env:
-  HADOLINT_DOWNLOAD: https://github.com/hadolint/hadolint/releases/download/
-  # hadolint v2.15.1
-  HADOLINT_VERSION: v2.15.1/hadolint-linux-x86_64
-  HADOLINT_SHA256: >-
-    c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
-
 jobs:
   prek:
     runs-on: ubuntu-latest
@@ -19,11 +12,18 @@ jobs:
           run: |
             wget --tries=3 --output-document=/usr/local/bin/hadolint \
               --continue --progress=dot:mega \
-              $HADOLINT_DOWNLOAD$HADOLINT_VERSION
+              $HADOLINT_DOWNLOAD/$HADOLINT_VERSION/$HADOLINT_BINARY
             echo "$HADOLINT_SHA256 /usr/local/bin/hadolint" \
                > hadolint-linux-x86_64_sha256checksum
             sha256sum --check hadolint-linux-x86_64_sha256checksum
             chmod 0755 /usr/local/bin/hadolint
+          env:
+            HADOLINT_DOWNLOAD: >-
+              https://github.com/hadolint/hadolint/releases/download
+            HADOLINT_BINARY: hadolint-linux-x86_64
+            HADOLINT_VERSION: v2.15.1
+            HADOLINT_SHA256: >-
+              c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
 
         # https://github.com/koalaman/shellcheck
         - name: Install shellcheck
@@ -44,7 +44,7 @@ jobs:
             install-only: true
 
       # https://stackoverflow.com/a/75237344
-      - name: On merge, skip no-commit-to-branch
+      - name: On merge, set env variable to skip no-commit-to-branch
         if: ${{ github.event.pull_request.merged }}
         run: echo 'PREK_SKIP=no-commit-to-branch' >> $GITHUB_ENV
 
