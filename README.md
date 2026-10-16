@@ -61,7 +61,7 @@ Docker services & utilities for ease, experimentation, and reference.
 [![CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
 button][cc-zero-png]][cc-zero]
 
-[`LICENSE`](LICENSE): The contents of this repository is dedicated to the
+[`LICENSE`](LICENSE): The contents of this repository are dedicated to the
 public domain under the [CC0 1.0 Universal (CC0 1.0) Public Domain
 Dedication][cc-zero].
 
