@@ -25,4 +25,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         wget \
     && DEBIAN_FRONTEND=noninteractive apt-get clean --quiet
 
-CMD ["/bin/sh", "-c", "echo 'Sleeping 💤'; trap 'exit' TERM; while true; do sleep 1 || exit; done"]
+COPY sleeping /usr/local/bin/sleeping
+RUN chmod 0755 /usr/local/bin/sleeping
+CMD [ "/usr/local/bin/sleeping"]
